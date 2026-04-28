@@ -20,13 +20,11 @@ class MainWindow:
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_columnconfigure(0, weight=1)
 
-        #title frame
+        #main menu title frame
         self.title_frame = Frame(parent,bg= "lightyellow")
         self.title_frame.grid(column=0,row=0, sticky= NSEW)
         self.title_frame.grid_rowconfigure(0, weight=1)
         self.title_frame.grid_columnconfigure(0, weight=1)
-
-        #navigation frame
 
         #main menu title
         menu_title = Label(
@@ -35,6 +33,31 @@ class MainWindow:
             background= "lightyellow"
         )
         menu_title.grid(column=0,row=0)
+
+        #navigation frame
+        self.navi_frame = Frame(parent,bg= "white")
+        self.navi_frame.grid(column=0, row=1, sticky= NSEW)
+        self.navi_frame.grid_rowconfigure(1, weight=1)
+        self.navi_frame.grid_columnconfigure(0,weight=1)
+
+        #show all button
+        show_all_btn = Button(
+            self.navi_frame, 
+            text= "Show all",
+            padx=20,
+            pady=5
+            )
+        show_all_btn.grid(column=0,row=0, pady=3)
+
+        #stock adjustment button
+        stock_adjust_btn = Button(
+            self.navi_frame,
+            text= "Adjust stock",
+            padx=20,
+            pady=5
+            )
+        stock_adjust_btn.grid(column=0,row=2, pady=3)
+
 
 if __name__ == "__main__":
     root = Tk()
