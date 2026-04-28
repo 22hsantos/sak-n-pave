@@ -17,8 +17,23 @@ class MainWindow:
     def __init__(self,parent):
         parent.geometry("400x400")
 
-        testlbl = Label(parent, text="This is the main window.")
-        testlbl.pack()
+        """layout configuration"""
+        parent.grid_rowconfigure(0, weight=1)
+        parent.grid_columnconfigure(0, weight=1)
+
+        """title frame"""
+        self.title_frame = Frame(parent,bg= "lightyellow")
+        self.title_frame.grid(column=0,row=0, sticky= NSEW)
+        self.title_frame.grid_rowconfigure(0, weight=1)
+        self.title_frame.grid_columnconfigure(0, weight=1)
+
+        """main menu title"""
+        menu_title = Label(
+            parent,
+            text= "Welcome to Sak n Pave Inventory system.",
+            background= "lightyellow"
+        )
+        menu_title.grid(column=0,row=0)
 
 if __name__ == "__main__":
     root = Tk()
