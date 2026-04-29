@@ -9,6 +9,35 @@ Users can also add, remove, or modify stock information.
 
 from tkinter import *
 from tkinter import messagebox
+import pickle
+import os
+
+class InventoryItem:
+    """
+    support class for creating Inventory items.
+    """
+    def __init__(self,name,stock,price):
+        self.name = name
+        self.stock = stock
+        self.price = price
+
+all_stock = {
+    "apple": InventoryItem("Apple", 5, 5),
+    "orange": InventoryItem("Orange", 6, 3)
+}
+
+def write_data():
+    with open('inventory.pkl', 'wb') as f:
+        pickle.dump(all_stock, f)
+def load_data():
+    with open('inventory.pkl', 'rb') as f:
+        loaded = pickle.load(f)
+    
+    for name, item in loaded.items():
+        print(f"{name}, {vars(item)}")
+    os.startfile('inventory.pkl')
+    
+
 
 class MainWindow:
     """
@@ -88,3 +117,5 @@ if __name__ == "__main__":
     root = Tk()
     main = MainWindow(root)
     root.mainloop()
+    write_data()
+    load_data()
