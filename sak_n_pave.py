@@ -20,13 +20,19 @@ class MainWindow:
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_columnconfigure(0, weight=1)
 
+        #main menu frame
+        self.main_menu_frame = Frame(parent)
+        self.main_menu_frame.grid(column=0,row=0,sticky=NSEW)
+        self.main_menu_frame.grid_rowconfigure(0,weight=1)
+        self.main_menu_frame.grid_columnconfigure(0,weight=1)
+
         #main menu title frame
-        self.title_frame = Frame(parent,bg= "lightyellow")
+        self.title_frame = Frame(self.main_menu_frame,bg= "lightyellow")
         self.title_frame.grid(column=0,row=0, sticky= NSEW)
         self.title_frame.grid_rowconfigure(0, weight=1)
         self.title_frame.grid_columnconfigure(0, weight=1)
 
-        #main menu title
+        #main menu title label
         menu_title = Label(
             self.title_frame,
             text= "Welcome to Sak n Pave Inventory system.",
@@ -36,7 +42,7 @@ class MainWindow:
         menu_title.grid(column=0,row=0)
 
         #navigation frame
-        self.navi_frame = Frame(parent,bg= "white")
+        self.navi_frame = Frame(self.main_menu_frame,bg= "white")
         self.navi_frame.grid(column=0, row=1, sticky= NSEW)
         self.navi_frame.grid_rowconfigure(1, weight=1)
         self.navi_frame.grid_columnconfigure(0,weight=1)
