@@ -40,9 +40,15 @@ class MainWindow:
         self.navi_frame.grid_rowconfigure(1, weight=1)
         self.navi_frame.grid_columnconfigure(0,weight=1)
 
+        #buttons frame
+        self.btn_frame = Frame(self.navi_frame,bg="white")
+        self.btn_frame.grid(column=0,row=0,padx=50,pady=50,sticky= NSEW)
+        self.btn_frame.grid_rowconfigure(0,weight=1)
+        self.btn_frame.grid_columnconfigure(0,weight=1)
+
         #show all button
         show_all_btn = Button(
-            self.navi_frame, 
+            self.btn_frame, 
             text= "Show all",
             padx=20,
             pady=5
@@ -51,7 +57,7 @@ class MainWindow:
 
         #manage stock button
         stock_adjust_btn = Button(
-            self.navi_frame,
+            self.btn_frame,
             text= "manage stock",
             padx=20,
             pady=5
