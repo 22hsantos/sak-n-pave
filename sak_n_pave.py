@@ -49,10 +49,10 @@ class MainWindow:
             )
         show_all_btn.grid(column=0,row=0, pady=3)
 
-        #stock adjustment button
+        #manage stock button
         stock_adjust_btn = Button(
             self.navi_frame,
-            text= "Adjust stock",
+            text= "manage stock",
             padx=20,
             pady=5
             )
