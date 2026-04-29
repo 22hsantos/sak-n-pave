@@ -30,6 +30,7 @@ class MainWindow:
         menu_title = Label(
             self.title_frame,
             text= "Welcome to Sak n Pave Inventory system.",
+            font=("Arial", 12),
             background= "lightyellow"
         )
         menu_title.grid(column=0,row=0)
@@ -42,23 +43,35 @@ class MainWindow:
 
         #buttons frame
         self.btn_frame = Frame(self.navi_frame,bg="white")
-        self.btn_frame.grid(column=0,row=0,padx=50,pady=50,sticky= NSEW)
+        self.btn_frame.grid(column=0,row=0,padx=40,pady=50,sticky= NSEW)
         self.btn_frame.grid_rowconfigure(0,weight=1)
         self.btn_frame.grid_columnconfigure(0,weight=1)
+
+        #find stock button
+        find_stock_btn = Button(
+            self.btn_frame,
+            text= "find stock",
+            font=("Arial", 10),
+            padx=20,
+            pady=5
+        )
+        find_stock_btn.grid(column=0,row=0,pady=3)
 
         #show all button
         show_all_btn = Button(
             self.btn_frame, 
             text= "Show all",
+            font=("Arial", 10),
             padx=20,
             pady=5
             )
-        show_all_btn.grid(column=0,row=0, pady=3)
+        show_all_btn.grid(column=0,row=1, pady=3)
 
         #manage stock button
         stock_adjust_btn = Button(
             self.btn_frame,
             text= "manage stock",
+            font=("Arial", 10),
             padx=20,
             pady=5
             )
