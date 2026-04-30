@@ -108,17 +108,35 @@ class MainWindow:
             )
         stock_adjust_btn.grid(column=0,row=2, pady=3)
 
+        #test frame
         self.test_frame = Frame(parent)
 
+    def make_return_button(self,source):
+        """Creates a return button for the source frame."""
+        return_btn = Button(
+            source,
+            text="Return to Main Menu",
+            command=lambda: self.return_to_main_menu(source)
+            )
+        return_btn.grid(column=3, row=0, pady=5)
+
+    def return_to_main_menu(self,source):
+        """Forgets the current screen and returns to the main menu."""
+        source.grid_remove()
+        self.main_menu_frame.grid()
+        self.navi_frame.grid()
+
     def display_all_stock(self):
-        self.main_menu_frame.grid_forget()
-        self.navi_frame.grid_forget()
+        """Display all stock items."""
+        self.main_menu_frame.grid_remove()
+        self.navi_frame.grid_remove()
         self.test_frame.grid(column=0, row=0, sticky=NSEW)
         current_row = 0
         for name, items in load_data().items():
             lbl = Label(self.test_frame, text=f"Item: {items.name}, Stock: {items.stock}, Price: {items.price}", font=("Arial", 10))
             lbl.grid(column=0, row=current_row)
             current_row += 1
+        self.make_return_button(self.test_frame)
 
 if __name__ == "__main__":
     root = Tk()
