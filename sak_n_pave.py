@@ -32,10 +32,12 @@ def write_data():
 def load_data():
     with open('inventory.pkl', 'rb') as f:
         loaded = pickle.load(f)
-    
+
     for name, item in loaded.items():
         print(f"{name}, {vars(item)}")
+    # open the file in the default application (Windows)
     os.startfile('inventory.pkl')
+    return loaded
     
 
 
