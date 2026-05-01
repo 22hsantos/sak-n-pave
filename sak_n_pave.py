@@ -45,13 +45,13 @@ class MainWindow:
         parent.grid_columnconfigure(0, weight=1)
 
         #main menu frame
-        self.main_menu_frame = Frame(parent)
-        self.main_menu_frame.grid(column=0,row=0,sticky=NSEW)
-        self.main_menu_frame.grid_rowconfigure(0,weight=1)
-        self.main_menu_frame.grid_columnconfigure(0,weight=1)
+        self.header_frame = Frame(parent)
+        self.header_frame.grid(column=0,row=0,sticky=NSEW)
+        self.header_frame.grid_rowconfigure(0,weight=1)
+        self.header_frame.grid_columnconfigure(0,weight=1)
 
         #main menu title frame
-        self.title_frame = Frame(self.main_menu_frame,bg= "lightyellow")
+        self.title_frame = Frame(self.header_frame,bg= "lightyellow")
         self.title_frame.grid(column=0,row=0, sticky= NSEW)
         self.title_frame.grid_rowconfigure(0, weight=1)
         self.title_frame.grid_columnconfigure(0, weight=1)
@@ -66,7 +66,7 @@ class MainWindow:
         menu_title.grid(column=0,row=0)
 
         #navigation frame
-        self.navi_frame = Frame(self.main_menu_frame,bg= "white")
+        self.navi_frame = Frame(self.header_frame,bg= "white")
         self.navi_frame.grid(column=0, row=1, sticky= NSEW)
         self.navi_frame.grid_rowconfigure(1, weight=1)
         self.navi_frame.grid_columnconfigure(0,weight=1)
@@ -110,32 +110,30 @@ class MainWindow:
 
         #test frame
         self.test_frame = Frame(parent)
+        #show all frame
+        self.show_all_frame = Frame(parent)
 
     def make_return_button(self,source):
         """Creates a return button for the source frame."""
         return_btn = Button(
             source,
             text="Return to Main Menu",
-            command=lambda: self.return_to_main_menu(source)
+            command=lambda: self.return_to_header(source)
             )
         return_btn.grid(column=3, row=0, pady=5)
 
-    def return_to_main_menu(self,source):
+    def return_to_header(self,source):
         """Forgets the current screen and returns to the main menu."""
         source.grid_remove()
-        self.main_menu_frame.grid()
+        self.header_frame.grid()
         self.navi_frame.grid()
 
     def display_all_stock(self):
         """Display all stock items."""
-        self.main_menu_frame.grid_remove()
+        self.header_frame.grid_remove()
         self.navi_frame.grid_remove()
-        self.test_frame.grid(column=0, row=0, sticky=NSEW)
-        current_row = 0
-        for name, items in load_data().items():
-            lbl = Label(self.test_frame, text=f"Item: {items.name}, Stock: {items.stock}, Price: {items.price}", font=("Arial", 10))
-            lbl.grid(column=0, row=current_row)
-            current_row += 1
+        self.show_all_frame.grid(column=0, row=0, sticky=NSEW)
+
         self.make_return_button(self.test_frame)
 
 if __name__ == "__main__":
