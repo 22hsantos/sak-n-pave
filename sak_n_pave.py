@@ -51,14 +51,14 @@ class MainWindow:
         self.header_frame.grid_rowconfigure(0, weight=1)
         self.header_frame.grid_columnconfigure(0, weight=1)
 
-        #main menu title label
-        menu_title = Label(
+        #header label
+        self.header_label = Label(
             self.header_frame,
             text= "Welcome to Sak n Pave Inventory system.",
             font=("Arial", 12),
             background= "lightyellow"
         )
-        menu_title.grid(column=0,row=0)
+        self.header_label.grid(column=0,row=0)
 
         #navigation frame
         self.navi_frame = Frame(self.parent,bg= "white")
@@ -122,16 +122,16 @@ class MainWindow:
         source.grid_remove()
         self.header_frame.grid()
         self.navi_frame.grid()
+
     def display_all_stock(self):
         """Display all stock items."""
-        self.header_frame.grid_remove()
         self.navi_frame.grid_remove()
 
-        self.show_all_frame.grid(column=0, row=0, sticky=NSEW)
-
-        self.header_frame.grid()
-        tst= Label(self.header_frame,text="Show All Stock")
-        tst.grid(column=0,row=0,sticky=NSEW)
+        self.header_label.config(text="Showing All Stock")
+        
+        """self.show_all_frame.grid(column=0, row=0, sticky=NSEW)
+        tst2 = Label(self.show_all_frame,text="this is show all frame.")
+        tst2.grid(column=0,row=0)"""
 
         self.make_return_button(self.show_all_frame)
 
