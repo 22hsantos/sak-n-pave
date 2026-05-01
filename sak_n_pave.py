@@ -136,12 +136,22 @@ class MainWindow:
         #change header label to "Showing All Stock"
         self.header_label.config(text="Showing All Stock")
 
-        #displays showing all data results
+        #shows show_all_frame
         self.show_all_frame.grid()
 
         tst2 = Label(self.show_all_frame,text="this is show all frame.")
         tst2.grid(column=0,row=0)
+
+        for name, item in load_data().items():
+            self.result(name,item)
+
         self.make_return_button(self.show_all_frame)
+
+    def result(self,name,item):
+        """loads data in readable state and returns"""
+        print(f"{name}: {item.name}")
+        
+
 
 if __name__ == "__main__":
     root = Tk()
