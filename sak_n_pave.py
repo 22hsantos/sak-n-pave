@@ -11,6 +11,7 @@ from tkinter import *
 from tkinter import messagebox
 import pickle
 import os
+from typing import Self
 
 class InventoryItem:
     """
@@ -43,10 +44,11 @@ class MainWindow:
         self.parent = parent
         parent.geometry("400x400")
         parent.grid_rowconfigure(0, weight=1)
+        parent.grid_rowconfigure(1, weight=1)
         parent.grid_columnconfigure(0, weight=1)
 
         #header frame
-        self.header_frame = Frame(parent,bg= "lightyellow")
+        self.header_frame = Frame(self.parent,bg= "lightyellow")
         self.header_frame.grid(column=0,row=0, sticky= NSEW)
         self.header_frame.grid_rowconfigure(0, weight=1)
         self.header_frame.grid_columnconfigure(0, weight=1)
@@ -106,7 +108,11 @@ class MainWindow:
         #test frame
         self.test_frame = Frame(parent)
         #show all frame
-        self.show_all_frame = Frame(parent)
+        self.show_all_frame = Frame(self.parent)
+        self.show_all_frame.grid(column=0, row=1, sticky=NSEW)
+        self.show_all_frame.grid_rowconfigure(1,weight=1)
+        self.show_all_frame.grid_columnconfigure(0,weight=1)
+        self.show_all_frame.grid_remove()
 
     def make_return_button(self,source):
         """Creates a return button for the source frame."""
@@ -127,12 +133,14 @@ class MainWindow:
         """Display all stock items."""
         self.navi_frame.grid_remove()
 
+        #change header label to "Showing All Stock"
         self.header_label.config(text="Showing All Stock")
-        
-        """self.show_all_frame.grid(column=0, row=0, sticky=NSEW)
-        tst2 = Label(self.show_all_frame,text="this is show all frame.")
-        tst2.grid(column=0,row=0)"""
 
+        #displays showing all data results
+        self.show_all_frame.grid()
+
+        tst2 = Label(self.show_all_frame,text="this is show all frame.")
+        tst2.grid(column=0,row=0)
         self.make_return_button(self.show_all_frame)
 
 if __name__ == "__main__":
