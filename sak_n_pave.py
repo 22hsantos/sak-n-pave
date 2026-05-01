@@ -40,25 +40,20 @@ class MainWindow:
     """
     def __init__(self,parent):
         #layout configuration 
+        self.parent = parent
         parent.geometry("400x400")
         parent.grid_rowconfigure(0, weight=1)
         parent.grid_columnconfigure(0, weight=1)
 
-        #main menu frame
-        self.header_frame = Frame(parent)
-        self.header_frame.grid(column=0,row=0,sticky=NSEW)
-        self.header_frame.grid_rowconfigure(0,weight=1)
-        self.header_frame.grid_columnconfigure(0,weight=1)
-
-        #main menu title frame
-        self.title_frame = Frame(self.header_frame,bg= "lightyellow")
-        self.title_frame.grid(column=0,row=0, sticky= NSEW)
-        self.title_frame.grid_rowconfigure(0, weight=1)
-        self.title_frame.grid_columnconfigure(0, weight=1)
+        #header frame
+        self.header_frame = Frame(parent,bg= "lightyellow")
+        self.header_frame.grid(column=0,row=0, sticky= NSEW)
+        self.header_frame.grid_rowconfigure(0, weight=1)
+        self.header_frame.grid_columnconfigure(0, weight=1)
 
         #main menu title label
         menu_title = Label(
-            self.title_frame,
+            self.header_frame,
             text= "Welcome to Sak n Pave Inventory system.",
             font=("Arial", 12),
             background= "lightyellow"
@@ -66,7 +61,7 @@ class MainWindow:
         menu_title.grid(column=0,row=0)
 
         #navigation frame
-        self.navi_frame = Frame(self.header_frame,bg= "white")
+        self.navi_frame = Frame(self.parent,bg= "white")
         self.navi_frame.grid(column=0, row=1, sticky= NSEW)
         self.navi_frame.grid_rowconfigure(1, weight=1)
         self.navi_frame.grid_columnconfigure(0,weight=1)
@@ -127,14 +122,18 @@ class MainWindow:
         source.grid_remove()
         self.header_frame.grid()
         self.navi_frame.grid()
-
     def display_all_stock(self):
         """Display all stock items."""
         self.header_frame.grid_remove()
         self.navi_frame.grid_remove()
+
         self.show_all_frame.grid(column=0, row=0, sticky=NSEW)
 
-        self.make_return_button(self.test_frame)
+        self.header_frame.grid()
+        tst= Label(self.header_frame,text="Show All Stock")
+        tst.grid(column=0,row=0,sticky=NSEW)
+
+        self.make_return_button(self.show_all_frame)
 
 if __name__ == "__main__":
     root = Tk()
