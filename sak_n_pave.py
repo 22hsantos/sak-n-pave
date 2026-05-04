@@ -92,6 +92,7 @@ class MainWindow:
         find_stock_btn = Button(
             self.btn_frame,
             text= "find stock",
+            command= self.find_stock,
             font=("Arial", 10),
             padx=20,
             pady=5
@@ -140,6 +141,11 @@ class MainWindow:
         self.modify_frame.grid_columnconfigure(0,weight=1)
         self.modify_frame.grid_columnconfigure(1,weight=1)
         self.modify_frame.grid_remove()
+
+        #item search frame
+        self.item_search_frame = Frame(parent)
+        self.item_search_frame.grid(column=0,row=1,sticky=NSEW)
+        self.item_search_frame.grid_remove()
 
         self.main_menu()
 
@@ -314,6 +320,10 @@ class MainWindow:
         self.modify_frame.grid_remove()
         self.item_details(key, item)
 
+    def find_stock(self):
+        self.item_search_frame.grid()
+        tst = Label(self.item_search_frame, text="find stock")
+        tst.grid(column=0,row=0)
 
 if __name__ == "__main__":
     root = Tk()
