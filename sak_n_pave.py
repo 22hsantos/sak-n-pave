@@ -136,16 +136,6 @@ class MainWindow:
         self.modify_frame.grid_columnconfigure(1,weight=1)
         self.modify_frame.grid_remove()
 
-        #modify item entries
-        self.modify_name_entry = Entry(self.modify_frame)
-        self.modify_name_entry.grid(column=1,row=0,sticky=W)
-
-        self.modify_stock_entry = Entry(self.modify_frame)
-        self.modify_stock_entry.grid(column=1,row=1,sticky=W)
-
-        self.modify_price_entry = Entry(self.modify_frame)
-        self.modify_price_entry.grid(column=1,row=2,sticky=W)
-
         self.main_menu()
 
     def main_menu(self):
@@ -254,6 +244,38 @@ class MainWindow:
     def manage_item(self, key, item):
         self.item_details_frame.grid_remove()
         self.modify_frame.grid()
+    
+        #modify item entries
+        self.modify_name_entry = Entry(self.modify_frame)
+        self.modify_name_entry.grid(column=1,row=0,sticky=NSEW,padx=10,pady=5)
+
+        self.modify_stock_entry = Entry(self.modify_frame)
+        self.modify_stock_entry.grid(column=1,row=1,sticky=NSEW,padx=10,pady=5)
+
+        self.modify_price_entry = Entry(self.modify_frame)
+        self.modify_price_entry.grid(column=1,row=2,sticky=NSEW,padx=10,pady=5)
+        
+        #modify item labels
+        self.modify_name_label = Label(self.modify_frame, text="Name:")
+        self.modify_name_label.grid(column=0,row=0,sticky=NSEW)
+
+        self.modify_stock_label = Label(self.modify_frame, text="Stock:")
+        self.modify_stock_label.grid(column=0,row=1,sticky=NSEW)
+
+        self.modify_price_label = Label(self.modify_frame, text="Price:")
+        self.modify_price_label.grid(column=0,row=2,sticky=NSEW)
+
+        save_btn = Button(
+            self.modify_frame,
+            text="Save",
+            command=lambda: self.save_item_changes(key, item),
+            padx=20,
+            pady=5
+        )
+        save_btn.grid(column=1,row=3, pady=10, sticky=W)
+
+    def save_item_changes(self, key, item):
+        pass
 
 if __name__ == "__main__":
     root = Tk()
