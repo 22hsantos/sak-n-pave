@@ -11,7 +11,6 @@ from tkinter import *
 from tkinter import messagebox
 import pickle
 import os
-from typing import Self
 
 class InventoryItem:
     """
@@ -23,13 +22,14 @@ class InventoryItem:
         self.price = price
 
 all_stock = {
-    "apple": InventoryItem("Apple", 5, 5),
-    "orange": InventoryItem("Orange", 6, 3)
+"apple": InventoryItem("Apple", 5, 5),
+"orange": InventoryItem("Orange", 6, 3)
 }
 
 def write_data():
     with open('inventory.pkl', 'wb') as f:
         pickle.dump(all_stock, f)
+
 def load_data():
     with open('inventory.pkl', 'rb') as f:
         return pickle.load(f)
@@ -50,8 +50,8 @@ class MainWindow:
         #header frame
         self.header_frame = Frame(self.parent,bg= "lightyellow")
         self.header_frame.grid(column=0,row=0, sticky= NSEW)
-        self.header_frame.grid_rowconfigure(0, weight=1)
-        self.header_frame.grid_columnconfigure(0, weight=1)
+        self.header_frame.grid_rowconfigure(1, weight=1)
+        self.header_frame.grid_columnconfigure(1, weight=1)
 
         #header label
         self.header_label = Label(
@@ -60,7 +60,7 @@ class MainWindow:
             font=("Arial", 12),
             background= "lightyellow"
         )
-        self.header_label.grid(column=0,row=0)
+        self.header_label.grid(column=1,row=1)
 
         #navigation frame
         self.navi_frame = Frame(self.parent,bg= "white")
@@ -107,21 +107,22 @@ class MainWindow:
 
         #test frame
         self.test_frame = Frame(parent)
+        
         #show all frame
         self.show_all_frame = Frame(self.parent)
         self.show_all_frame.grid(column=0, row=1, sticky=NSEW)
-        self.show_all_frame.grid_rowconfigure(1,weight=1)
         self.show_all_frame.grid_columnconfigure(0,weight=1)
+        self.show_all_frame.grid_columnconfigure(1,weight=1)
         self.show_all_frame.grid_remove()
 
     def make_return_button(self,source):
         """Creates a return button for the source frame."""
         return_btn = Button(
             source,
-            text="Return to Main Menu",
+            text="Return",
             command=lambda: self.return_to_header(source)
             )
-        return_btn.grid(column=3, row=0, pady=5)
+        return_btn.grid(column=0, row=0, pady=5)
 
     def return_to_header(self,source):
         """Forgets the current screen and returns to the main menu."""
@@ -142,20 +143,26 @@ class MainWindow:
         tst2 = Label(self.show_all_frame,text="this is show all frame.")
         tst2.grid(column=0,row=0)
 
-        for name, item in load_data().items():
-            self.result(name,item)
+        self.result(self.show_all_frame)
 
-        self.make_return_button(self.show_all_frame)
+        self.make_return_button(self.header_frame)
 
-    def result(self,name,item):
+    def result(self,source):
         """loads data in readable state and returns"""
-        print(f"{name}: {item.name}")
-        
+        current_row = 0
+        for name, item in load_data().items():
+            result_name = Label(source,text=f"{name}")
+            result_name.grid(column=0,row=current_row,sticky=NSEW)
 
+            result_stock = Label(source, text=f"stock: {item.stock}")
+            result_stock.grid(column=1,row=current_row)
+
+            current_row+= 1
+
+            print(f'{item.name}, {item.stock}')
 
 if __name__ == "__main__":
     root = Tk()
     main = MainWindow(root)
     root.mainloop()
-    write_data()
     load_data()
