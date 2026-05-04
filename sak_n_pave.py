@@ -29,9 +29,11 @@ def default_data():
     """Creates default data for inventory."""
     with open('inventory.pkl', 'wb') as f:
         pickle.dump(all_stock, f)
+    load_data()
 
-def write_data():
+def update_data(key,item):
     """Writes the current stock data to inventory pickle file."""
+    all_stock[key] = item
     with open('inventory.pkl', 'wb') as f:
         pickle.dump(all_stock, f)
 
@@ -303,10 +305,13 @@ class MainWindow:
         item.stock = int(new_stock)
         item.price = int(new_price)
 
-        self.write_data(key,item)
+        update_data(key,item)
 
         messagebox.showinfo("Success", "Item updated successfully.")
 
+        self.item_details(key, item)
+
+        self.modify_frame.grid_remove()
         self.item_details(key, item)
 
 
@@ -314,5 +319,5 @@ if __name__ == "__main__":
     root = Tk()
     main = MainWindow(root)
     root.mainloop()
-    write_data()
+    default_data()
     load_data()
