@@ -127,11 +127,11 @@ class MainWindow:
             text="Return",
             command=lambda: self.return_to_header(source)
             )
-        return_btn.grid(column=0, row=0, pady=5)
+        return_btn.grid(column=0, row=100, pady=5, sticky=SW)
 
-    def return_to_header(self,source):
+    def return_to_header(self,source2):#TODO:fix naming convention
         """Forgets the current screen and returns to the main menu."""
-        source.grid_remove()
+        source2.grid_remove()
         self.header_frame.grid()
         self.navi_frame.grid()
         self.header_label.config(text="Welcome to Sak n Pave Inventory system.")
@@ -151,7 +151,8 @@ class MainWindow:
 
         self.result(self.show_all_frame)
 
-        self.make_return_button(self.header_frame)
+        self.make_return_button(self.show_all_frame)
+        #TODO: make the return button inside the header
 
     def result(self,source):
         """loads data in readable state and returns"""
