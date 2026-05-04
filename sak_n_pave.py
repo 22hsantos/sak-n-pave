@@ -346,11 +346,16 @@ class MainWindow:
 
         self.search_button.grid()
 
-        tst = Label(self.item_search_frame, text="find stock")
-        tst.grid(column=0,row=0)
-
     def search_inventory(self):
-        pass
+        search_input = self.search_bar.get()
+        search_result = inventory.get(search_input)
+        
+        if inventory.get(search_input):
+            lbl = Label(
+                self.item_search_frame,
+                text=(search_result.name)
+                )
+            lbl.grid(column=0,row=0)
 
 if __name__ == "__main__":
     root = Tk()
