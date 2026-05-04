@@ -41,6 +41,7 @@ def load_data():
     with open('inventory.pkl', 'rb') as f:
         return pickle.load(f)
 
+inventory = load_data()
 
 class MainWindow:
     """
@@ -243,6 +244,7 @@ class MainWindow:
 
     def manage_item(self, key, item):
         self.item_details_frame.grid_remove()
+        self.header_label.config(text=f"Modifying Item: {key}")
         self.modify_frame.grid()
     
         #modify item entries
@@ -268,14 +270,38 @@ class MainWindow:
         save_btn = Button(
             self.modify_frame,
             text="Save",
-            command=lambda: self.save_item_changes(key, item),
+            command=lambda: self.save_item_changes(key,item),
             padx=20,
             pady=5
         )
         save_btn.grid(column=1,row=3, pady=10, sticky=W)
 
+        self.make_return_button(self.modify_frame)
+
     def save_item_changes(self, key, item):
-        pass
+        
+        new_name = self.modify_name_entry.get()
+        new_stock = self.modify_stock_entry.get()
+        new_price = self.modify_price_entry.get()
+
+        if not new_name:
+            messagebox.showerror("Error", "Name cannot be empty.")
+            return
+        if not new_stock.isdigit():
+            messagebox.showerror("Error", "Stock must be a number.")
+            return
+        if not new_price.isdigit():
+            messagebox.showerror("Error", "Price must be a number.")
+            return
+
+        item.name = new_name
+        item.stock = int(new_stock)
+        item.price = int(new_price)
+
+        messagebox.showinfo("Success", "Item updated successfully.")
+
+        self.item_details(key, item)
+
 
 if __name__ == "__main__":
     root = Tk()
