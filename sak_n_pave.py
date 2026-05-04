@@ -26,8 +26,6 @@ all_stock = {
 "002": InventoryItem("Orange", 6, 3)
 }
 
-inventory_order = []
-
 def write_data():
     """Writes the current stock data to inventory pickle file."""
     with open('inventory.pkl', 'wb') as f:
@@ -109,7 +107,7 @@ class MainWindow:
         stock_adjust_btn = Button(
             self.btn_frame,
             text= "manage stock",
-            command=lambda: self.item_details(load_data().get("001"), load_data().get("001")),
+            command=lambda: self.item_details(inventory().get("001"), inventory.get("001")),
             font=("Arial", 10),
             padx=20,
             pady=5
@@ -178,7 +176,7 @@ class MainWindow:
         """loads data in readable state and returns"""
         current_row = 0
         
-        for name, item in load_data().items():
+        for name, item in inventory.items():
             
             #item SKU
             result_sku = Label(source, text=f"Stock Code: {name}")
