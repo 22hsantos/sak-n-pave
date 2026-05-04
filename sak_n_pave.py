@@ -26,6 +26,8 @@ all_stock = {
 "002": InventoryItem("Orange", 6, 3)
 }
 
+inventory_order = []
+
 def write_data():
     """Writes the current stock data to inventory pickle file."""
     with open('inventory.pkl', 'wb') as f:
@@ -106,7 +108,7 @@ class MainWindow:
         stock_adjust_btn = Button(
             self.btn_frame,
             text= "manage stock",
-            command=self.item_details,
+            command=lambda: self.item_details(load_data().get("001"), load_data().get("001")),
             font=("Arial", 10),
             padx=20,
             pady=5
@@ -126,6 +128,23 @@ class MainWindow:
         self.item_details_frame.grid_columnconfigure(0,weight=1)
         self.item_details_frame.grid_columnconfigure(1,weight=1)
         self.item_details_frame.grid_remove()
+
+        #modify item frame
+        self.modify_frame = Frame(parent)
+        self.modify_frame.grid(column=0,row=1,sticky=NSEW)
+        self.modify_frame.grid_columnconfigure(0,weight=1)
+        self.modify_frame.grid_columnconfigure(1,weight=1)
+        self.modify_frame.grid_remove()
+
+        #modify item entries
+        self.modify_name_entry = Entry(self.modify_frame)
+        self.modify_name_entry.grid(column=1,row=0,sticky=W)
+
+        self.modify_stock_entry = Entry(self.modify_frame)
+        self.modify_stock_entry.grid(column=1,row=1,sticky=W)
+
+        self.modify_price_entry = Entry(self.modify_frame)
+        self.modify_price_entry.grid(column=1,row=2,sticky=W)
 
         self.main_menu()
 
@@ -167,7 +186,9 @@ class MainWindow:
     def result(self,source):
         """loads data in readable state and returns"""
         current_row = 0
+        
         for name, item in load_data().items():
+            
             #item SKU
             result_sku = Label(source, text=f"Stock Code: {name}")
             result_sku.grid(column=0,row=current_row)
@@ -178,22 +199,26 @@ class MainWindow:
 
             #item stock 
             result_stock = Label(source, text=f"stock: {item.stock}")
-            result_stock.grid(column=2,row=current_row, padx= 10)
+            result_stock.grid(column=2,row=current_row)
+
+            item_details = Button(
+                source,
+                text="Details",
+                command=lambda name = name, item=item: self.item_details(name,item)
+            )
+            item_details.grid(column=3,row=current_row, padx=10)
 
             current_row+= 1
 
-            print(f'{item.name}, {item.stock}')
-
-    def item_details(self):
+    def item_details(self,key,item):
+        print(key,item)
         self.header_label.config(text="Manage Stock")
         self.navi_frame.grid_remove()
         self.item_details_frame.grid()
 
-        item = load_data().get("001")
-
         sku_label = Label(
             self.item_details_frame,
-            text="Stock Code: 001"
+            text=f"Stock Code: {key}"
             )
         sku_label.grid(column=0,row=0,sticky=W)
 
@@ -219,12 +244,20 @@ class MainWindow:
         price_label.grid(column=1,row=1)
 
         self.make_return_button(self.item_details_frame)
+        modify_btn = Button(
+            self.item_details_frame,
+            text="Modify",
+            command=lambda: self.manage_item(key,item)
+        )
+        modify_btn.grid(column=1,row=100,sticky=SE)
 
-    def manage_item(self):
-        pass 
+    def manage_item(self, key, item):
+        self.item_details_frame.grid_remove()
+        self.modify_frame.grid()
 
 if __name__ == "__main__":
     root = Tk()
     main = MainWindow(root)
     root.mainloop()
+    write_data()
     load_data()
