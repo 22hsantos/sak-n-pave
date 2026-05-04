@@ -27,10 +27,15 @@ all_stock = {
 }
 
 def write_data():
+    """Writes the current stock data to inventory pickle file."""
     with open('inventory.pkl', 'wb') as f:
         pickle.dump(all_stock, f)
 
 def load_data():
+    """Loads stock data from inventory pickle file."""
+
+    if not os.path.exists('inventory.pkl'):
+        write_data()
     with open('inventory.pkl', 'rb') as f:
         return pickle.load(f)
 
@@ -129,6 +134,7 @@ class MainWindow:
         source.grid_remove()
         self.header_frame.grid()
         self.navi_frame.grid()
+        self.header_label.config(text="Welcome to Sak n Pave Inventory system.")
 
     def display_all_stock(self):
         """Display all stock items."""
