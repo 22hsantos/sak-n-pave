@@ -25,6 +25,10 @@ all_stock = {
 "001": InventoryItem("Apple", 5, 5),
 "002": InventoryItem("Orange", 6, 3)
 }
+def default_data():
+    """Creates default data for inventory."""
+    with open('inventory.pkl', 'wb') as f:
+        pickle.dump(all_stock, f)
 
 def write_data():
     """Writes the current stock data to inventory pickle file."""
@@ -35,7 +39,7 @@ def load_data():
     """Loads stock data from inventory pickle file."""
 
     if not os.path.exists('inventory.pkl'):
-        write_data()
+        default_data()
     with open('inventory.pkl', 'rb') as f:
         return pickle.load(f)
 
@@ -107,7 +111,7 @@ class MainWindow:
         stock_adjust_btn = Button(
             self.btn_frame,
             text= "manage stock",
-            command=lambda: self.item_details(inventory().get("001"), inventory.get("001")),
+            command=lambda: self.item_details("001", inventory.get("001")),
             font=("Arial", 10),
             padx=20,
             pady=5
@@ -248,13 +252,16 @@ class MainWindow:
         #modify item entries
         self.modify_name_entry = Entry(self.modify_frame)
         self.modify_name_entry.grid(column=1,row=0,sticky=NSEW,padx=10,pady=5)
+        self.modify_name_entry.insert(0, item.name)
 
         self.modify_stock_entry = Entry(self.modify_frame)
         self.modify_stock_entry.grid(column=1,row=1,sticky=NSEW,padx=10,pady=5)
+        self.modify_stock_entry.insert(0, item.stock)
 
         self.modify_price_entry = Entry(self.modify_frame)
         self.modify_price_entry.grid(column=1,row=2,sticky=NSEW,padx=10,pady=5)
-        
+        self.modify_price_entry.insert(0, item.price)
+
         #modify item labels
         self.modify_name_label = Label(self.modify_frame, text="Name:")
         self.modify_name_label.grid(column=0,row=0,sticky=NSEW)
@@ -295,6 +302,8 @@ class MainWindow:
         item.name = new_name
         item.stock = int(new_stock)
         item.price = int(new_price)
+
+        self.write_data(key,item)
 
         messagebox.showinfo("Success", "Item updated successfully.")
 
