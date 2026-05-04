@@ -57,6 +57,7 @@ class MainWindow:
         self.header_frame.grid(column=0,row=0, sticky= NSEW)
         self.header_frame.grid_rowconfigure(1, weight=1)
         self.header_frame.grid_columnconfigure(1, weight=1)
+        self.header_frame.grid_remove()
 
         #header label
         self.header_label = Label(
@@ -72,6 +73,7 @@ class MainWindow:
         self.navi_frame.grid(column=0, row=1, sticky= NSEW)
         self.navi_frame.grid_rowconfigure(1, weight=1)
         self.navi_frame.grid_columnconfigure(0,weight=1)
+        self.navi_frame.grid_remove()
 
         #buttons frame
         self.btn_frame = Frame(self.navi_frame,bg="white")
@@ -104,14 +106,12 @@ class MainWindow:
         stock_adjust_btn = Button(
             self.btn_frame,
             text= "manage stock",
+            command=self.item_details,
             font=("Arial", 10),
             padx=20,
             pady=5
             )
         stock_adjust_btn.grid(column=0,row=2, pady=3)
-
-        #test frame
-        self.test_frame = Frame(parent)
         
         #show all frame
         self.show_all_frame = Frame(self.parent)
@@ -119,6 +119,19 @@ class MainWindow:
         self.show_all_frame.grid_columnconfigure(0,weight=1)
         self.show_all_frame.grid_columnconfigure(1,weight=1)
         self.show_all_frame.grid_remove()
+
+        #item details frame
+        self.item_details_frame = Frame(parent)
+        self.item_details_frame.grid(column=0,row=0,sticky=NSEW)
+        self.item_details_frame.grid_columnconfigure(0,weight=1)
+        self.item_details_frame.grid_rowconfigure(0,weight=1)
+        self.item_details_frame.grid_remove()
+
+        self.main_menu()
+
+    def main_menu(self):
+        self.header_frame.grid()
+        self.navi_frame.grid()
 
     def make_return_button(self,source):
         """Creates a return button for the source frame."""
@@ -165,11 +178,18 @@ class MainWindow:
 
             #item stock 
             result_stock = Label(source, text=f"stock: {item.stock}")
-            result_stock.grid(column=2,row=current_row)
+            result_stock.grid(column=2,row=current_row, padx= 10)
 
             current_row+= 1
 
             print(f'{item.name}, {item.stock}')
+
+    def item_details(self):
+        self.header_frame.grid_remove()
+        self.navi_frame.grid_remove()
+        self.item_details_frame.grid()
+        tst = Label(self.item_details_frame,text="This is the item details frame.")
+        tst.grid(column=0,row=0)
 
     def manage_item(self):
         pass 
