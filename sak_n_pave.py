@@ -22,8 +22,8 @@ class InventoryItem:
         self.price = price
 
 all_stock = {
-"apple": InventoryItem("Apple", 5, 5),
-"orange": InventoryItem("Orange", 6, 3)
+"001": InventoryItem("Apple", 5, 5),
+"002": InventoryItem("Orange", 6, 3)
 }
 
 def write_data():
@@ -146,9 +146,6 @@ class MainWindow:
         #shows show_all_frame
         self.show_all_frame.grid()
 
-        tst2 = Label(self.show_all_frame,text="this is show all frame.")
-        tst2.grid(column=0,row=0)
-
         self.result(self.show_all_frame)
 
         self.make_return_button(self.show_all_frame)
@@ -158,15 +155,24 @@ class MainWindow:
         """loads data in readable state and returns"""
         current_row = 0
         for name, item in load_data().items():
-            result_name = Label(source,text=f"{name}")
-            result_name.grid(column=0,row=current_row,sticky=NSEW)
+            #item SKU
+            result_sku = Label(source, text=f"Stock Code: {name}")
+            result_sku.grid(column=0,row=current_row)
 
+            #item name
+            result_name = Label(source,text=f"{item.name}")
+            result_name.grid(column=1,row=current_row,sticky=NSEW)
+
+            #item stock 
             result_stock = Label(source, text=f"stock: {item.stock}")
-            result_stock.grid(column=1,row=current_row)
+            result_stock.grid(column=2,row=current_row)
 
             current_row+= 1
 
             print(f'{item.name}, {item.stock}')
+
+    def manage_item(self):
+        pass 
 
 if __name__ == "__main__":
     root = Tk()
