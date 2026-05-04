@@ -55,8 +55,8 @@ class MainWindow:
         #header frame
         self.header_frame = Frame(self.parent,bg= "lightyellow")
         self.header_frame.grid(column=0,row=0, sticky= NSEW)
-        self.header_frame.grid_rowconfigure(1, weight=1)
-        self.header_frame.grid_columnconfigure(1, weight=1)
+        self.header_frame.grid_rowconfigure(0, weight=1)
+        self.header_frame.grid_columnconfigure(0, weight=1)
         self.header_frame.grid_remove()
 
         #header label
@@ -66,7 +66,7 @@ class MainWindow:
             font=("Arial", 12),
             background= "lightyellow"
         )
-        self.header_label.grid(column=1,row=1)
+        self.header_label.grid(column=0,row=0)
 
         #navigation frame
         self.navi_frame = Frame(self.parent,bg= "white")
@@ -122,9 +122,9 @@ class MainWindow:
 
         #item details frame
         self.item_details_frame = Frame(parent)
-        self.item_details_frame.grid(column=0,row=0,sticky=NSEW)
+        self.item_details_frame.grid(column=0,row=1,sticky=NSEW)
         self.item_details_frame.grid_columnconfigure(0,weight=1)
-        self.item_details_frame.grid_rowconfigure(0,weight=1)
+        self.item_details_frame.grid_columnconfigure(1,weight=1)
         self.item_details_frame.grid_remove()
 
         self.main_menu()
@@ -142,9 +142,9 @@ class MainWindow:
             )
         return_btn.grid(column=0, row=100, pady=5, sticky=SW)
 
-    def return_to_header(self,source2):#TODO:fix naming convention
+    def return_to_header(self,source):#TODO:fix naming convention
         """Forgets the current screen and returns to the main menu."""
-        source2.grid_remove()
+        source.grid_remove()
         self.header_frame.grid()
         self.navi_frame.grid()
         self.header_label.config(text="Welcome to Sak n Pave Inventory system.")
@@ -185,11 +185,40 @@ class MainWindow:
             print(f'{item.name}, {item.stock}')
 
     def item_details(self):
-        self.header_frame.grid_remove()
+        self.header_label.config(text="Manage Stock")
         self.navi_frame.grid_remove()
         self.item_details_frame.grid()
-        tst = Label(self.item_details_frame,text="This is the item details frame.")
-        tst.grid(column=0,row=0)
+
+        item = load_data().get("001")
+
+        sku_label = Label(
+            self.item_details_frame,
+            text="Stock Code: 001"
+            )
+        sku_label.grid(column=0,row=0,sticky=W)
+
+        name_label = Label(
+            self.item_details_frame,
+            text=f"{item.name}",
+            font=("Arial", 20)
+            )
+        name_label.grid(column=0,row=1)
+
+        stock_label = Label(
+            self.item_details_frame,
+            text=f"In Stock: {item.stock}"
+            )
+        stock_label.grid(column=0,row=2,sticky=SW)
+
+        price_label = Label(
+            self.item_details_frame,
+            text=f"${item.price:.2f}",
+            font=("Arial", 25),
+            bg="white"
+            )
+        price_label.grid(column=1,row=1)
+
+        self.make_return_button(self.item_details_frame)
 
     def manage_item(self):
         pass 
