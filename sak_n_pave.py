@@ -75,6 +75,22 @@ class MainWindow:
         )
         self.header_label.grid(column=0,row=0)
 
+
+        #makes search bar in header frame
+        self.search_bar = Entry(self.header_frame,font=("Arial", 15))
+        self.search_bar.grid(column=0,row=1,sticky=NSEW,padx=10,pady=5)
+        self.search_bar.grid_remove()
+
+        self.search_button = Button(
+            self.header_frame,
+            text="Search",
+            command=self.search_inventory,
+            padx=20,
+            pady=5
+        )
+        self.search_button.grid(column=1,row=1,sticky=NSEW,padx=10,pady=5)
+        self.search_button.grid_remove()
+
         #navigation frame
         self.navi_frame = Frame(self.parent,bg= "white")
         self.navi_frame.grid(column=0, row=1, sticky= NSEW)
@@ -321,9 +337,20 @@ class MainWindow:
         self.item_details(key, item)
 
     def find_stock(self):
+        self.navi_frame.grid_remove()
+        self.header_label.config(text="Find Stock")
         self.item_search_frame.grid()
+
+        self.search_bar.grid()
+        self.search_bar.delete(0, END)
+
+        self.search_button.grid()
+
         tst = Label(self.item_search_frame, text="find stock")
         tst.grid(column=0,row=0)
+
+    def search_inventory(self):
+        pass
 
 if __name__ == "__main__":
     root = Tk()
