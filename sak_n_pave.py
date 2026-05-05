@@ -21,29 +21,20 @@ class InventoryItem:
         self.stock = stock
         self.price = price
 
-all_stock = {
-"001": InventoryItem("Apple", 5, 5),
-"002": InventoryItem("Orange", 6, 3)
-}
-
-def default_data():
-    """Creates default data for inventory."""
-    with open('testing.pkl', 'wb') as f:
-        pickle.dump(all_stock, f)
-    load_data()
 def update_data(key,item):
     """Updates inventory data in pickle file."""
-    with open('testing.pkl', 'rb') as f:
+    with open('inventory.pkl', 'rb') as f:
         data = pickle.load(f)
     data[key] = item
-    with open('testing.pkl', 'wb') as f:
+    with open('inventory.pkl', 'wb') as f:
         pickle.dump(data, f)
+    load_data()
 
 def load_data():
     """Loads stock data from inventory pickle file."""
-    if not os.path.exists('testing.pkl'):
-        default_data()
-    with open('testing.pkl', 'rb') as f:
+    if not os.path.exists('inventory.pkl'):
+        os.system('python seed.py')
+    with open('inventory.pkl', 'rb') as f:
         return pickle.load(f)
 
 inventory = load_data()
@@ -349,7 +340,7 @@ class MainWindow:
             self.item_details(search_input, search_result)
         else:
             for key, item in inventory.items():
-                if item.name == search_input.lower():
+                if item.key == search_input.lower():
                     self.item_details(item.key, item)
             messagebox.showinfo("Not found", "Item not found in inventory.")
         
@@ -363,7 +354,7 @@ class MainWindow:
         #modify item entries
         self.modify_name_entry = Entry(self.modify_stock_frame)
         self.modify_name_entry.grid(column=1,row=1,sticky=NSEW,padx=10,pady=5)
-        self.modify_name_entry.insert(0, item.name)
+        self.modify_name_entry.insert(0, item.key)
 
         self.modify_stock_entry = Entry(self.modify_stock_frame)
         self.modify_stock_entry.grid(column=1,row=2,sticky=NSEW,padx=10,pady=5)
@@ -395,9 +386,15 @@ class MainWindow:
     def item_details(self,key,item):
         self.item_details_frame.grid()
         self.sku_label.config(text=f"Stock Code: {key}")
-        self.name_label.config(text=f"{item.name}")
+        self.name_label.config(text=f"{item.key}")
         self.stock_label.config(text=f"In Stock: {item.stock}")
         self.price_label.config(text=f"${item.price:.2f}")
+
+        if item.stock < 3:
+            messagebox.showwarning("Low stock", f"{item.key} is low in stock!")
+            self.stock_label.config(fg="red")
+        else:
+            self.stock_label.config(fg="black")
         
         self.make_return_button(self.item_details_frame)
     def results(self,index,key,item,source):
@@ -406,7 +403,7 @@ class MainWindow:
         result_sku.grid(column=0,row=index)
 
         #item name
-        result_name = Label(source,text=f"{item.name}")
+        result_name = Label(source,text=f"{item.key}")
         result_name.grid(column=1,row=index,sticky=NSEW)
 
         #item stock
@@ -438,7 +435,7 @@ class MainWindow:
             messagebox.showerror("Error", "Price must be a number.")
             return
 
-        item.name = new_name
+        item.key = new_name
         item.stock = int(new_stock)
         item.price = int(new_price)
 
