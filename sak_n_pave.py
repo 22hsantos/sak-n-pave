@@ -34,7 +34,7 @@ def default_data():
 
 def update_data(key,item):
     """Writes the current stock data to inventory pickle file."""
-    all_stock[key] = item
+    all_stock[key] = item#TODO: fix all_stock to inventory
     with open('inventory.pkl', 'wb') as f:
         pickle.dump(all_stock, f)
 
@@ -175,20 +175,24 @@ class MainWindow:
         return_btn = Button(
             source,
             text="Return",
-            command=lambda: self.return_to_header(source)
+            command=lambda: self.return_to_header()
             )
         return_btn.grid(column=0, row=100, pady=5, sticky=SW)
 
-    def return_to_header(self,source):#TODO:fix naming convention
+    def return_to_header(self):#TODO:fix naming convention
         """Forgets the current screen and returns to the main menu."""
-        source.grid_remove()
+        for frame in self.parent.winfo_children():
+            frame.grid_remove()
+
         for widget in self.header_frame.winfo_children():
             widget.grid_remove()
 
+        self.header_frame.grid()
+        self.header_label.grid()
+        self.header_label.config(text="Welcome to Sak n Pave Inventory system.")       
         self.navi_frame.grid()
 
-        self.header_label.config(text="Welcome to Sak n Pave Inventory system.")
-        self.header_label.grid()
+        
 
     def display_all_stock(self):
         """Display all stock items."""
@@ -370,5 +374,4 @@ if __name__ == "__main__":
     root = Tk()
     main = MainWindow(root)
     root.mainloop()
-    default_data()
-    load_data()
+
