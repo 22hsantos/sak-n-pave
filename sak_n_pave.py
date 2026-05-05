@@ -489,6 +489,13 @@ class MainWindow:
         # build
         for index, (key, item) in enumerate(inventory.items()):
             self.results(index, key, item, self.manage_stock_content_frame)
+            self.item_details_btn.grid_remove()
+            self.modify_item_btn = Button(
+                self.manage_stock_content_frame,
+                text="Modify",
+                command=lambda key=key, item=item: self.modify_item(key,item)
+            )
+            self.modify_item_btn.grid(column=4,row=index, padx=10)
         # add button
         add_item_btn = Button(
             self.manage_stock_content_frame,
