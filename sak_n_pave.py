@@ -16,8 +16,8 @@ class InventoryItem:
     """
     support class for creating Inventory items.
     """
-    def __init__(self,name,stock,price):
-        self.name = name
+    def __init__(self,key,stock,price):
+        self.key = key
         self.stock = stock
         self.price = price
 
@@ -28,21 +28,22 @@ all_stock = {
 
 def default_data():
     """Creates default data for inventory."""
-    with open('inventory.pkl', 'wb') as f:
+    with open('testing.pkl', 'wb') as f:
         pickle.dump(all_stock, f)
     load_data()
-
 def update_data(key,item):
-    """Writes the current stock data to inventory pickle file."""
-    all_stock[key] = item#TODO: fix all_stock to inventory
-    with open('inventory.pkl', 'wb') as f:
-        pickle.dump(all_stock, f)
+    """Updates inventory data in pickle file."""
+    with open('testing.pkl', 'rb') as f:
+        data = pickle.load(f)
+    data[key] = item
+    with open('testing.pkl', 'wb') as f:
+        pickle.dump(data, f)
 
 def load_data():
     """Loads stock data from inventory pickle file."""
-    if not os.path.exists('inventory.pkl'):
+    if not os.path.exists('testing.pkl'):
         default_data()
-    with open('inventory.pkl', 'rb') as f:
+    with open('testing.pkl', 'rb') as f:
         return pickle.load(f)
 
 inventory = load_data()
@@ -52,54 +53,38 @@ class MainWindow:
     Main application class for navigation and stock display.
     """
     def __init__(self,parent):
+
         #layout configuration 
         self.parent = parent
         parent.geometry("400x400")
         parent.grid_rowconfigure(0, weight=1)
-        parent.grid_rowconfigure(1, weight=1)
         parent.grid_columnconfigure(0, weight=1)
 
+        #region for main menu screen
+
+        """Main menu screen for navigation"""
+
+        #main menu frame
+        self.main_menu_frame = Frame(parent,bg="white")
+        self.main_menu_frame.grid(column=0, row=0, sticky=NSEW)
+        self.main_menu_frame.grid_rowconfigure(0, weight=1)
+        self.main_menu_frame.grid_columnconfigure(0, weight=1)
+
         #header frame
-        self.header_frame = Frame(self.parent,bg= "lightyellow")
-        self.header_frame.grid(column=0,row=0, sticky= NSEW)
+        self.header_frame = Frame(self.main_menu_frame,bg="lightblue")
+        self.header_frame.grid(column=0, row=0, sticky=NSEW)
         self.header_frame.grid_rowconfigure(0, weight=1)
         self.header_frame.grid_columnconfigure(0, weight=1)
-        self.header_frame.grid_remove()
 
         #header label
-        self.header_label = Label(
-            self.header_frame,
-            text= "Welcome to Sak n Pave Inventory system.",
-            font=("Arial", 12),
-            background= "lightyellow"
-        )
-        self.header_label.grid(column=0,row=0)
-
-
-        #makes search bar in header frame
-        self.search_bar = Entry(self.header_frame,font=("Arial", 15))
-        self.search_bar.grid(column=0,row=1,sticky=NSEW,padx=10,pady=5)
-        self.search_bar.grid_remove()
-
-        #search button for search entry
-        self.search_button = Button(
-            self.header_frame,
-            text="Search",
-            command=self.search_inventory,
-            padx=20,
-            pady=5
-        )
-        self.search_button.grid(column=1,row=1,sticky=NSEW,padx=10,pady=5)
-        self.search_button.grid_remove()
+        self.header_label = Label(self.header_frame, text="SaknPave Inventory System", font=("Arial", 16), bg="lightblue")
+        self.header_label.grid(column=0, row=0, sticky=NSEW)
 
         #navigation frame
-        self.navi_frame = Frame(self.parent,bg= "white")
-        self.navi_frame.grid(column=0, row=1, sticky= NSEW)
-        self.navi_frame.grid_rowconfigure(1, weight=1)
-        self.navi_frame.grid_columnconfigure(0,weight=1)
-        self.navi_frame.grid_remove()
+        self.navi_frame = Frame(self.main_menu_frame,bg="white")
+        self.navi_frame.grid(column=0, row=1, sticky=NSEW)
+        self.navi_frame.grid_columnconfigure(0, weight=1)
 
-        #buttons frame
         self.btn_frame = Frame(self.navi_frame,bg="white")
         self.btn_frame.grid(column=0,row=0,padx=40,pady=50,sticky= NSEW)
         self.btn_frame.grid_rowconfigure(0,weight=1)
@@ -121,100 +106,303 @@ class MainWindow:
             self.btn_frame, 
             text= "Show all",
             font=("Arial", 10),
-            command= self.display_all_stock,
+            command= self.show_all_stock,
             padx=20,
             pady=5
             )
         show_all_btn.grid(column=0,row=1, pady=3)
 
         #manage stock button
-        stock_adjust_btn = Button(
+        self.manage_stock_btn = Button(
             self.btn_frame,
             text= "manage stock",
-            command=lambda: self.item_details("001", inventory.get("001")),
+            command= self.manage_stock,
             font=("Arial", 10),
             padx=20,
             pady=5
             )
-        stock_adjust_btn.grid(column=0,row=2, pady=3)
-        
-        #show all frame
-        self.show_all_frame = Frame(self.parent)
-        self.show_all_frame.grid(column=0, row=1, sticky=NSEW)
+        self.manage_stock_btn.grid(column=0,row=2, pady=3)
+
+        #endregion
+    
+        #region for find stock screen
+        #find stock frame
+        self.find_stock_frame = Frame(parent)
+        self.find_stock_frame.grid(column=0, row=0, sticky=NSEW)
+        self.find_stock_frame.grid_columnconfigure(0,weight=1)
+        self.find_stock_frame.grid_rowconfigure(0,weight=1)
+        self.find_stock_frame.grid_rowconfigure(1,weight=1)
+        self.find_stock_frame.grid_rowconfigure(2,weight=1)
+
+        #find stock header frame
+        self.find_stock_header = Frame(self.find_stock_frame,bg="lightblue")
+        self.find_stock_header.grid(column=0, row=0, sticky=NSEW,columnspan=2)
+        self.find_stock_header.grid_rowconfigure(0, weight=1)
+        self.find_stock_header.grid_columnconfigure(0, weight=1)
+
+        #find stock header label
+        self.find_stock_header_label = Label(
+            self.find_stock_header,
+            text="Find stock",
+            font=("Arial", 16),
+            bg="lightblue",
+            pady=20
+        )
+        self.find_stock_header_label.grid(column=0, row=0, sticky=NSEW)
+
+        #search bar
+        self.search_entry = Entry(self.find_stock_frame)
+        self.search_entry.grid(column=0,row=1,padx=10,pady=10,sticky=EW)
+
+        #search button
+        search_btn = Button(
+            self.find_stock_frame,
+            text="Search",
+            command=self.search_inventory
+        )
+        search_btn.grid(column=1,row=1,padx=10,pady=5,sticky=E)
+        self.find_stock_frame.grid_remove()
+        #endregion for find stock screen
+
+        #region for show inventory screen
+
+        #show inventory frame
+        self.show_all_frame = Frame(parent)
+        self.show_all_frame.grid(column=0, row=0, sticky=NSEW)
         self.show_all_frame.grid_columnconfigure(0,weight=1)
-        self.show_all_frame.grid_columnconfigure(1,weight=1)
+
+        #show inventory header frame
+        self.inventory_header = Frame(self.show_all_frame,bg="lightblue")
+        self.inventory_header.grid(column=0, row=0, sticky=NSEW)
+        self.inventory_header.grid_rowconfigure(0, weight=1)
+        self.inventory_header.grid_columnconfigure(0, weight=1)
+
+        #header label
+        self.header_label = Label(
+            self.inventory_header,
+            text="Showing all stock",
+            font=("Arial", 16),
+            bg="lightblue",
+            pady=20
+            )
+        self.header_label.grid(column=0, row=0, sticky=NSEW)
+
+        #show inventory content frame
+        self.inventory_content = Frame(self.show_all_frame)
+        self.inventory_content.grid(column=0, row=1, sticky=NSEW)
+        self.inventory_content.grid_columnconfigure(0,weight=1)
+
+        for index, (key, item) in enumerate(inventory.items()):
+            self.results(index, key, item, self.inventory_content)
+
         self.show_all_frame.grid_remove()
+        #endregion for show inventory screen
+
+        #region for item details screen
 
         #item details frame
-        self.item_details_frame = Frame(parent)
-        self.item_details_frame.grid(column=0,row=1,sticky=NSEW)
+        self.item_details_frame = Frame(parent,bg="white")
+        self.item_details_frame.grid(column=0, row=0, sticky=NSEW)
         self.item_details_frame.grid_columnconfigure(0,weight=1)
         self.item_details_frame.grid_columnconfigure(1,weight=1)
+        self.item_details_frame.grid_rowconfigure(1,weight=1)
+
+        #item details header frame
+        self.item_details_header = Frame(self.item_details_frame,bg="lightblue")
+        self.item_details_header.grid(column=0, row=0, sticky=NSEW,columnspan=2)
+        self.item_details_header.grid_rowconfigure(0, weight=1)
+        self.item_details_header.grid_rowconfigure(2, weight=1)
+        self.item_details_header.grid_columnconfigure(0, weight=1)
+
+        #item details header label
+        self.item_details_header_label = Label(
+            self.item_details_header,
+            text="Item details",
+            font=("Arial", 16),
+            bg="lightblue",
+            pady=50
+            )
+        self.item_details_header_label.grid(column=0, row=0, sticky=NSEW,columnspan=2)
+
+        #item details content frame
+        self.item_details_content = Frame(self.item_details_frame,bg="white")
+        self.item_details_content.grid(column=0, row=1, sticky=NSEW)
+        self.item_details_content.grid_columnconfigure(0,weight=1)
+        self.item_details_content.grid_rowconfigure(0,weight=1)
+
+        self.sku_label = Label(
+            self.item_details_frame,
+            text="Stock Code: 1111",
+            bg="white"
+            )
+        self.sku_label.grid(column=0,row=0,sticky=SW)
+
+        self.name_label = Label(
+            self.item_details_frame,
+            text="Apple ",
+            font=("Arial", 20),
+            bg="white"
+            )
+        self.name_label.grid(column=0,row=1)
+
+        self.stock_label = Label(
+            self.item_details_frame,
+            text= "In Stock: 3"
+            )
+        self.stock_label.grid(column=0,row=2,sticky=SW)
+
+        self.price_label = Label(
+            self.item_details_frame,
+            text="$1.99",
+            font=("Arial", 25),
+            bg="white"
+            )
+        self.price_label.grid(column=1,row=1) 
+
         self.item_details_frame.grid_remove()
+        #endregion for item details screen
 
-        #modify item frame
-        self.modify_frame = Frame(parent)
-        self.modify_frame.grid(column=0,row=1,sticky=NSEW)
-        self.modify_frame.grid_columnconfigure(0,weight=1)
-        self.modify_frame.grid_columnconfigure(1,weight=1)
-        self.modify_frame.grid_remove()
+        #region for modify stock screen
 
-        #item search frame
-        self.item_search_frame = Frame(parent)
-        self.item_search_frame.grid(column=0,row=1,sticky=NSEW)
-        self.item_search_frame.grid_remove()
+        #modify stock frame
+        self.modify_stock_frame = Frame(parent)
+        self.modify_stock_frame.grid(column=0, row=0, sticky=NSEW)
+        self.modify_stock_frame.grid_columnconfigure(0,weight=1)
+        self.modify_stock_frame.grid_rowconfigure(0,weight=1)
 
-        self.main_menu()
+        #modify stock header frame
+        self.modify_stock_header = Frame(self.modify_stock_frame,bg="lightblue")
+        self.modify_stock_header.grid(column=0, row=0, sticky=NSEW,columnspan=2)
+        self.modify_stock_header.grid_rowconfigure(0, weight=1)
+        self.modify_stock_header.grid_rowconfigure(2, weight=1)
+        self.modify_stock_header.grid_columnconfigure(0, weight=1)
 
-    def main_menu(self):
-        self.header_frame.grid()
-        self.navi_frame.grid()
+        #modify stock header label
+        self.modify_stock_header_label = Label(
+            self.modify_stock_header,
+            text="Modify Stock",
+            font=("Arial", 16),
+            bg="lightblue",
+            pady=50
+            )
+        self.modify_stock_header_label.grid(column=0, row=0, sticky=NSEW,columnspan=2)
 
+        #modify item labels
+        self.modify_name_label = Label(self.modify_stock_frame, text="Name:")
+        self.modify_name_label.grid(column=0,row=1,sticky=NSEW)
+
+        self.modify_stock_label = Label(self.modify_stock_frame, text="Stock:")
+        self.modify_stock_label.grid(column=0,row=2,sticky=NSEW)
+
+        self.modify_price_label = Label(self.modify_stock_frame, text="Price:")
+        self.modify_price_label.grid(column=0,row=3,sticky=NSEW)
+
+        self.modify_stock_frame.grid_remove()
+        #endregion for modify stock screen
+
+        #region for manage stock screen
+
+
+        #manage stock frame
+        self.manage_stock_frame = Frame(parent,bg="white")
+        self.manage_stock_frame.grid(column=0, row=0, sticky=NSEW)
+        self.manage_stock_frame.grid_columnconfigure(0, weight=1)
+
+        #manage stock header frame
+        self.manage_stock_header_frame = Frame(self.manage_stock_frame,bg="lightblue",pady=20)
+        self.manage_stock_header_frame.grid(column=0, row=0, sticky=NSEW,columnspan=2)
+        self.manage_stock_header_frame.grid_rowconfigure(0, weight=1)
+        self.manage_stock_header_frame.grid_columnconfigure(0, weight=1)
+
+        #manage stock header label
+        self.manage_stock_header_label = Label(self.manage_stock_header_frame, text="Manage Stock", font=("Arial", 16), bg="lightblue")
+        self.manage_stock_header_label.grid(column=0, row=0, sticky=NSEW)
+
+        #manage stock content frame
+        self.manage_stock_content_frame = Frame(self.manage_stock_frame,bg="white")
+        self.manage_stock_content_frame.grid(column=0, row=1, sticky=NSEW)
+        self.manage_stock_content_frame.grid_rowconfigure(0, weight=1)
+        self.manage_stock_content_frame.grid_columnconfigure(0, weight=1)
+
+        for index, (key, item) in enumerate(inventory.items()):
+            self.results(index, key, item, self.manage_stock_content_frame)
+            self.item_details_btn.config(text="Modify", command=lambda key=key, item=item: self.modify_item(key,item))
+
+        self.manage_stock_frame.grid_remove()
+        #endregion for manage stock screen
+
+    def find_stock(self):
+        self.find_stock_frame.grid()
+        self.make_return_button(self.find_stock_frame)
+    def search_inventory(self):
+        """
+        takes user input and searches inventory.pkl for a match,
+        displays matching items
+        """
+        #user input
+        search_input = self.search_entry.get()
+
+        #item
+        search_result = inventory.get(search_input)
+
+        if search_result:
+            self.item_details(search_input, search_result)
+        else:
+            for key, item in inventory.items():
+                if item.name == search_input.lower():
+                    self.item_details(item.key, item)
+            messagebox.showinfo("Not found", "Item not found in inventory.")
+        
+    def show_all_stock(self):
+        self.show_all_frame.grid()
+        self.make_return_button(self.show_all_frame)
+    def modify_item(self,key,item):
+        self.manage_stock_frame.grid_remove()
+        self.modify_stock_frame.grid()
+
+        #modify item entries
+        self.modify_name_entry = Entry(self.modify_stock_frame)
+        self.modify_name_entry.grid(column=1,row=1,sticky=NSEW,padx=10,pady=5)
+        self.modify_name_entry.insert(0, item.name)
+
+        self.modify_stock_entry = Entry(self.modify_stock_frame)
+        self.modify_stock_entry.grid(column=1,row=2,sticky=NSEW,padx=10,pady=5)
+        self.modify_stock_entry.insert(0, item.stock)
+
+        self.modify_price_entry = Entry(self.modify_stock_frame)
+        self.modify_price_entry.grid(column=1,row=3,sticky=NSEW,padx=10,pady=5)
+        self.modify_price_entry.insert(0, item.price)
+
+        #modify item button
+        save_btn = Button(
+            self.modify_stock_frame,
+            text="Save",
+            command=lambda: self.save_item_changes(key,item),
+            padx=20,
+            pady=5
+        )
+        save_btn.grid(column=1,row=4, pady=10, sticky=W)
+        self.make_return_button(self.modify_stock_frame)
     def make_return_button(self,source):
-        """Creates a return button for the source frame."""
         return_btn = Button(
             source,
             text="Return",
-            command=lambda: self.return_to_header()
-            )
-        return_btn.grid(column=0, row=100, pady=5, sticky=SW)
-
-    def return_to_header(self):#TODO:fix naming convention
-        """Forgets the current screen and returns to the main menu."""
-        for frame in self.parent.winfo_children():
-            frame.grid_remove()
-
-        for widget in self.header_frame.winfo_children():
-            widget.grid_remove()
-
-        self.header_frame.grid()
-        self.header_label.grid()
-        self.header_label.config(text="Welcome to Sak n Pave Inventory system.")       
-        self.navi_frame.grid()
-
+            command= source.grid_remove,
+            padx=10,
+            pady=5
+        )
+        return_btn.grid(column=0,row=100,padx=10,pady=5,sticky=SW)
+    def item_details(self,key,item):
+        self.item_details_frame.grid()
+        self.sku_label.config(text=f"Stock Code: {key}")
+        self.name_label.config(text=f"{item.name}")
+        self.stock_label.config(text=f"In Stock: {item.stock}")
+        self.price_label.config(text=f"${item.price:.2f}")
         
-
-    def display_all_stock(self):
-        """Display all stock items."""
-        self.navi_frame.grid_remove()
-
-        #change header label to "Showing All Stock"
-        self.header_label.config(text="Showing All Stock")
-
-        #shows show_all_frame
-        self.show_all_frame.grid()
-
-        for index, (name, item) in enumerate(inventory.items()):
-            self.result(self.show_all_frame, name, item, index)
-
-        self.make_return_button(self.show_all_frame)
-        #TODO: make the return button inside the header
-
-    def result(self,source,name,item, index):
-        """loads data in readable state and returns"""
-            
+        self.make_return_button(self.item_details_frame)
+    def results(self,index,key,item,source):
         #item SKU
-        result_sku = Label(source, text=f"Stock Code: {name}")
+        result_sku = Label(source, text=f"Stock Code: {key}")
         result_sku.grid(column=0,row=index)
 
         #item name
@@ -225,96 +413,17 @@ class MainWindow:
         result_stock = Label(source, text=f"stock: {item.stock}")
         result_stock.grid(column=2,row=index)
 
-        item_details = Button(
+        self.item_details_btn = Button(
             source,
             text="Details",
-            command=lambda name = name, item=item: self.item_details(name,item)
+            command=lambda key = key, item=item: self.item_details(key,item)
         )
-        item_details.grid(column=3,row=index, padx=10)
+        self.item_details_btn.grid(column=3,row=index, padx=10)
+    def manage_stock(self):
+        self.manage_stock_frame.grid()
+        self.make_return_button(self.manage_stock_frame)
+    def save_item_changes(self,key,item):
 
-    def item_details(self,key,item): 
-
-        self.header_label.config(text="Manage Stock")
-        self.navi_frame.grid_remove()
-        self.item_details_frame.grid()
-
-        sku_label = Label(
-            self.item_details_frame,
-            text=f"Stock Code: {key}"
-            )
-        sku_label.grid(column=0,row=0,sticky=W)
-
-        name_label = Label(
-            self.item_details_frame,
-            text=f"{item.name}",
-            font=("Arial", 20)
-            )
-        name_label.grid(column=0,row=1)
-
-        stock_label = Label(
-            self.item_details_frame,
-            text=f"In Stock: {item.stock}"
-            )
-        stock_label.grid(column=0,row=2,sticky=SW)
-
-        price_label = Label(
-            self.item_details_frame,
-            text=f"${item.price:.2f}",
-            font=("Arial", 25),
-            bg="white"
-            )
-        price_label.grid(column=1,row=1)
-
-        self.make_return_button(self.item_details_frame)
-
-        modify_btn = Button(
-            self.item_details_frame,
-            text="Modify",
-            command=lambda: self.manage_item(key,item)
-        )
-        modify_btn.grid(column=1,row=100,sticky=SE)
-
-    def manage_item(self, key, item):
-        self.item_details_frame.grid_remove()
-        self.header_label.config(text=f"Modifying Item: {key}")
-        self.modify_frame.grid()
-    
-        #modify item entries
-        self.modify_name_entry = Entry(self.modify_frame)
-        self.modify_name_entry.grid(column=1,row=0,sticky=NSEW,padx=10,pady=5)
-        self.modify_name_entry.insert(0, item.name)
-
-        self.modify_stock_entry = Entry(self.modify_frame)
-        self.modify_stock_entry.grid(column=1,row=1,sticky=NSEW,padx=10,pady=5)
-        self.modify_stock_entry.insert(0, item.stock)
-
-        self.modify_price_entry = Entry(self.modify_frame)
-        self.modify_price_entry.grid(column=1,row=2,sticky=NSEW,padx=10,pady=5)
-        self.modify_price_entry.insert(0, item.price)
-
-        #modify item labels
-        self.modify_name_label = Label(self.modify_frame, text="Name:")
-        self.modify_name_label.grid(column=0,row=0,sticky=NSEW)
-
-        self.modify_stock_label = Label(self.modify_frame, text="Stock:")
-        self.modify_stock_label.grid(column=0,row=1,sticky=NSEW)
-
-        self.modify_price_label = Label(self.modify_frame, text="Price:")
-        self.modify_price_label.grid(column=0,row=2,sticky=NSEW)
-
-        save_btn = Button(
-            self.modify_frame,
-            text="Save",
-            command=lambda: self.save_item_changes(key,item),
-            padx=20,
-            pady=5
-        )
-        save_btn.grid(column=1,row=3, pady=10, sticky=W)
-
-        self.make_return_button(self.modify_frame)
-
-    def save_item_changes(self, key, item):
-        
         new_name = self.modify_name_entry.get()
         new_stock = self.modify_stock_entry.get()
         new_price = self.modify_price_entry.get()
@@ -337,41 +446,10 @@ class MainWindow:
 
         messagebox.showinfo("Success", "Item updated successfully.")
 
+        self.modify_stock_frame.grid_remove()
         self.item_details(key, item)
-
-        self.modify_frame.grid_remove()
-        self.item_details(key, item)
-
-    def find_stock(self):
-        #remove navi frame and show item seach frame
-        self.navi_frame.grid_remove()
-        self.header_label.config(text="Find Stock")
-        self.item_search_frame.grid()
-
-        #show search bar
-        self.search_bar.grid()
-        self.search_bar.delete(0, END)
-
-        #show search button
-        self.search_button.grid()
-
-        self.make_return_button(self.item_search_frame)
-
-    def search_inventory(self):
-        """takes user input and searches inventory.pkl for a match,
-            displays matching items
-        """
-        #user key
-        search_input = self.search_bar.get()
-        search_result = inventory.get(search_input)
-        
-        if inventory.get(search_input):
-            self.result(self.item_search_frame, search_input,search_result,0)
-
-        #TODO: add user search function for name
 
 if __name__ == "__main__":
     root = Tk()
     main = MainWindow(root)
     root.mainloop()
-
