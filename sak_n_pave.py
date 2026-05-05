@@ -199,7 +199,6 @@ class MainWindow:
         #shows show_all_frame
         self.show_all_frame.grid()
 
-        current_row = 0
         for index, (name, item) in enumerate(inventory.items()):
             self.result(self.show_all_frame, name, item, index)
 
@@ -228,7 +227,7 @@ class MainWindow:
         )
         item_details.grid(column=3,row=index, padx=10)
 
-    def item_details(self,key,item):
+    def item_details(self,key,item): 
         print(key,item)
         self.header_label.config(text="Manage Stock")
         self.navi_frame.grid_remove()
@@ -262,6 +261,7 @@ class MainWindow:
         price_label.grid(column=1,row=1)
 
         self.make_return_button(self.item_details_frame)
+
         modify_btn = Button(
             self.item_details_frame,
             text="Modify",
