@@ -25,6 +25,7 @@ all_stock = {
 "001": InventoryItem("Apple", 5, 5),
 "002": InventoryItem("Orange", 6, 3)
 }
+
 def default_data():
     """Creates default data for inventory."""
     with open('inventory.pkl', 'wb') as f:
@@ -39,7 +40,6 @@ def update_data(key,item):
 
 def load_data():
     """Loads stock data from inventory pickle file."""
-
     if not os.path.exists('inventory.pkl'):
         default_data()
     with open('inventory.pkl', 'rb') as f:
@@ -81,6 +81,7 @@ class MainWindow:
         self.search_bar.grid(column=0,row=1,sticky=NSEW,padx=10,pady=5)
         self.search_bar.grid_remove()
 
+        #search button for search entry
         self.search_button = Button(
             self.header_frame,
             text="Search",
@@ -228,7 +229,7 @@ class MainWindow:
         item_details.grid(column=3,row=index, padx=10)
 
     def item_details(self,key,item): 
-        print(key,item)
+
         self.header_label.config(text="Manage Stock")
         self.navi_frame.grid_remove()
         self.item_details_frame.grid()
