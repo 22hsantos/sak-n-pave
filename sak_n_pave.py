@@ -524,6 +524,12 @@ class MainWindow:
         if not new_price.isdigit():
             messagebox.showerror("Error", "Price must be a number.")
             return
+        if int(new_stock) < 0:
+            messagebox.showerror("Error", "Stock cannot be negative.")
+            return
+        if int(new_price) < 0:
+            messagebox.showerror("Error", "Price cannot be negative.")
+            return
 
         item.key = new_name
         item.stock = int(new_stock)
@@ -548,6 +554,12 @@ class MainWindow:
             return
         if not new_price.isdigit():
             messagebox.showerror("Error", "Price must be a number.")
+            return
+        if int(new_stock) < 0:
+            messagebox.showerror("Error", "Stock cannot be negative.")
+            return
+        if int(new_price) < 0:
+            messagebox.showerror("Error", "Price cannot be negative.")
             return
         
         id_list =[]
