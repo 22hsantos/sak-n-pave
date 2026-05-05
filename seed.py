@@ -10,9 +10,9 @@ class InventoryItem:
         self.price = price
 
 initial_inventory = {
-"001": InventoryItem("Apple", 5, 5),
-"002": InventoryItem("Orange", 6, 3),
-"003": InventoryItem("Banana", 3, 10)
+"1": InventoryItem("Apple", 5, 5),
+"2": InventoryItem("Orange", 6, 3),
+"3": InventoryItem("Banana", 3, 10)
 }
 
 with open("inventory.pkl", "wb") as f:

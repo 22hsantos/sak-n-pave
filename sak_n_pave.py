@@ -28,6 +28,17 @@ def update_data(key,item):
     data[key] = item
     with open('inventory.pkl', 'wb') as f:
         pickle.dump(data, f)
+    global inventory
+    inventory = load_data()
+
+def add_data(key,item):
+    """Adds new item to inventory data in pickle file."""
+    with open('inventory.pkl', 'rb') as f:
+        data = pickle.load(f)
+    new_item = (key, item)
+    data.append(new_item)
+    with open('inventory.pkl', 'wb') as f:
+        pickle.dump(data, f)
     load_data()
 
 def load_data():
@@ -183,9 +194,6 @@ class MainWindow:
         self.inventory_content.grid(column=0, row=1, sticky=NSEW)
         self.inventory_content.grid_columnconfigure(0,weight=1)
 
-        for index, (key, item) in enumerate(inventory.items()):
-            self.results(index, key, item, self.inventory_content)
-
         self.show_all_frame.grid_remove()
         #endregion for show inventory screen
 
@@ -315,19 +323,6 @@ class MainWindow:
         self.manage_stock_content_frame.grid_rowconfigure(0, weight=1)
         self.manage_stock_content_frame.grid_columnconfigure(0, weight=1)
 
-        for index, (key, item) in enumerate(inventory.items()):
-            self.results(index, key, item, self.manage_stock_content_frame)
-            self.item_details_btn.config(text="Modify", command=lambda key=key, item=item: self.modify_item(key,item))
-        
-        add_item_btn = Button(
-            self.manage_stock_content_frame,
-            text="Add new item",
-            command=self.add_item,
-            padx=20,
-            pady=5
-        )
-        add_item_btn.grid(column=1, row=100, padx=10, pady=5, sticky=SE)
-
         self.manage_stock_frame.grid_remove()
         #endregion for manage stock screen
 
@@ -364,7 +359,7 @@ class MainWindow:
         self.add_price_label = Label(self.add_stock_frame, text="Price:")
         self.add_price_label.grid(column=0,row=3,sticky=NSEW)
 
-        #modify item entries
+        #add item entries
         self.add_name_entry = Entry(self.add_stock_frame)
         self.add_name_entry.grid(column=1,row=1,sticky=NSEW,padx=10,pady=5)
 
@@ -374,11 +369,11 @@ class MainWindow:
         self.add_price_entry = Entry(self.add_stock_frame)
         self.add_price_entry.grid(column=1,row=3,sticky=NSEW,padx=10,pady=5)
 
-        #modify item button
+        #add item button
         save_btn = Button(
             self.add_stock_frame,
             text="Save",
-            command=lambda: self.save_item_changes(key,item),
+            command=lambda: self.new_item(),
             padx=20,
             pady=5
         )
@@ -410,6 +405,12 @@ class MainWindow:
             messagebox.showinfo("Not found", "Item not found in inventory.")
     def show_all_stock(self):
         self.show_all_frame.grid()
+        # clear previous widgets
+        for widget in self.inventory_content.winfo_children():
+            widget.destroy()
+        # rebuild
+        for index, (key, item) in enumerate(inventory.items()):
+            self.results(index, key, item, self.inventory_content)
         self.make_return_button(self.show_all_frame)
     def modify_item(self,key,item):
         self.manage_stock_frame.grid_remove()
@@ -482,6 +483,21 @@ class MainWindow:
         self.item_details_btn.grid(column=3,row=index, padx=10)
     def manage_stock(self):
         self.manage_stock_frame.grid()
+        # clear
+        for widget in self.manage_stock_content_frame.winfo_children():
+            widget.destroy()
+        # build
+        for index, (key, item) in enumerate(inventory.items()):
+            self.results(index, key, item, self.manage_stock_content_frame)
+        # add button
+        add_item_btn = Button(
+            self.manage_stock_content_frame,
+            text="Add new item",
+            command=self.add_item,
+            padx=20,
+            pady=5
+        )
+        add_item_btn.grid(column=1, row=100, padx=10, pady=5, sticky=SE)
         self.make_return_button(self.manage_stock_frame)
     def add_item(self):
         self.add_stock_frame.grid()
@@ -512,7 +528,37 @@ class MainWindow:
 
         self.modify_stock_frame.grid_remove()
         self.item_details(key, item)
+    def new_item(self):
+        new_name = self.add_name_entry.get()
+        new_stock = self.add_stock_entry.get()
+        new_price = self.add_price_entry.get()
 
+        if not new_name:
+            messagebox.showerror("Error", "Name cannot be empty.")
+            return
+        if not new_stock.isdigit():
+            messagebox.showerror("Error", "Stock must be a number.")
+            return
+        if not new_price.isdigit():
+            messagebox.showerror("Error", "Price must be a number.")
+            return
+        
+        id_list =[]
+
+        for key in inventory.keys():
+            key = int(key)
+            id_list.append(key)
+
+        highest_id = max(id_list)
+        new_key = str(highest_id + 1)
+        new_item = InventoryItem(new_name, int(new_stock), int(new_price))
+
+        update_data(new_key, new_item)
+
+        messagebox.showinfo("Success", "Item added successfully.")
+
+        self.add_stock_frame.grid_remove()
+        self.item_details(new_key, new_item)
 if __name__ == "__main__":
     root = Tk()
     main = MainWindow(root)
