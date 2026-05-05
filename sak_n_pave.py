@@ -383,6 +383,7 @@ class MainWindow:
         #endregion for add stock screen
 
     def find_stock(self):
+        """Shows find stock screen where user can search for specific items in inventory"""
         self.find_stock_frame.grid()
         self.make_return_button(self.find_stock_frame)
     def search_inventory(self):
@@ -404,6 +405,7 @@ class MainWindow:
                     self.item_details(item.key, item)
             messagebox.showinfo("Not found", "Item not found in inventory.")
     def show_all_stock(self):
+        """Shows all stock screen, displays all items in inventory.pkl"""
         self.show_all_frame.grid()
         # clear previous widgets
         for widget in self.inventory_content.winfo_children():
@@ -413,6 +415,7 @@ class MainWindow:
             self.results(index, key, item, self.inventory_content)
         self.make_return_button(self.show_all_frame)
     def modify_item(self,key,item):
+        """modify item screen, allows user to change name, stock, and price of an item in inventory.pkl"""
         self.manage_stock_frame.grid_remove()
         self.modify_stock_frame.grid()
 
@@ -440,6 +443,7 @@ class MainWindow:
         save_btn.grid(column=1,row=4, pady=10, sticky=W)
         self.make_return_button(self.modify_stock_frame)
     def make_return_button(self,source):
+        """makes return button for current screen, takes user back to previous screen"""
         return_btn = Button(
             source,
             text="Return",
@@ -449,12 +453,14 @@ class MainWindow:
         )
         return_btn.grid(column=0,row=100,padx=10,pady=5,sticky=SW)
     def item_details(self,key,item):
+        """item details screen, shows details of a specific item in inventory.pkl"""
         self.item_details_frame.grid()
         self.sku_label.config(text=f"Stock Code: {key}")
         self.name_label.config(text=f"{item.key}")
         self.stock_label.config(text=f"In Stock: {item.stock}")
         self.price_label.config(text=f"${item.price:.2f}")
 
+        #stock warning if stock is low
         if item.stock < 3:
             messagebox.showwarning("Low stock", f"{item.key} is low in stock!")
             self.stock_label.config(fg="red")
@@ -463,6 +469,7 @@ class MainWindow:
         
         self.make_return_button(self.item_details_frame)
     def results(self,index,key,item,source):
+        """returns and formats search result for more readable display"""
         #item SKU
         result_sku = Label(source, text=f"Stock Code: {key}")
         result_sku.grid(column=0,row=index)
@@ -482,11 +489,12 @@ class MainWindow:
         )
         self.item_details_btn.grid(column=3,row=index, padx=10)
     def manage_stock(self):
+        """manage stock screen, displays all items and allows user to modify of add items"""
         self.manage_stock_frame.grid()
-        # clear
+        # clear existing widgets
         for widget in self.manage_stock_content_frame.winfo_children():
             widget.destroy()
-        # build
+        # build new widgets to update stock information
         for index, (key, item) in enumerate(inventory.items()):
             self.results(index, key, item, self.manage_stock_content_frame)
             self.item_details_btn.grid_remove()
@@ -507,14 +515,16 @@ class MainWindow:
         add_item_btn.grid(column=1, row=100, padx=10, pady=5, sticky=SE)
         self.make_return_button(self.manage_stock_frame)
     def add_item(self):
+        """add item screen, allows user to add new items to inventory.pkl"""
         self.add_stock_frame.grid()
         self.make_return_button(self.add_stock_frame)
     def save_item_changes(self,key,item):
-
+        """saves changes made to an item in modify item screen, updates to inventory.pkl"""
         new_name = self.modify_name_entry.get()
         new_stock = self.modify_stock_entry.get()
         new_price = self.modify_price_entry.get()
 
+        #input validation
         if not new_name:
             messagebox.showerror("Error", "Name cannot be empty.")
             return
@@ -531,6 +541,7 @@ class MainWindow:
             messagebox.showerror("Error", "Price cannot be negative.")
             return
 
+        #update item with new values
         item.key = new_name
         item.stock = int(new_stock)
         item.price = int(new_price)
@@ -542,10 +553,12 @@ class MainWindow:
         self.modify_stock_frame.grid_remove()
         self.item_details(key, item)
     def new_item(self):
+        """adds a new item to the inventory"""
         new_name = self.add_name_entry.get()
         new_stock = self.add_stock_entry.get()
         new_price = self.add_price_entry.get()
 
+        #input validation
         if not new_name:
             messagebox.showerror("Error", "Name cannot be empty.")
             return
@@ -562,8 +575,10 @@ class MainWindow:
             messagebox.showerror("Error", "Price cannot be negative.")
             return
         
+        #list of existing keys
         id_list =[]
 
+        #generates a new key by adding to the highest existing key
         for key in inventory.keys():
             key = int(key)
             id_list.append(key)
@@ -572,6 +587,7 @@ class MainWindow:
         new_key = str(highest_id + 1)
         new_item = InventoryItem(new_name, int(new_stock), int(new_price))
 
+        #adds new item to inventory.pkl
         update_data(new_key, new_item)
 
         messagebox.showinfo("Success", "Item added successfully.")
