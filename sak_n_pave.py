@@ -248,7 +248,7 @@ class MainWindow:
             font=("Arial", 25),
             bg="white"
             )
-        self.price_label.grid(column=1,row=1) 
+        self.price_label.grid(column=1,row=1)
 
         self.item_details_frame.grid_remove()
         #endregion for item details screen
@@ -318,9 +318,74 @@ class MainWindow:
         for index, (key, item) in enumerate(inventory.items()):
             self.results(index, key, item, self.manage_stock_content_frame)
             self.item_details_btn.config(text="Modify", command=lambda key=key, item=item: self.modify_item(key,item))
+        
+        add_item_btn = Button(
+            self.manage_stock_content_frame,
+            text="Add new item",
+            command=self.add_item,
+            padx=20,
+            pady=5
+        )
+        add_item_btn.grid(column=1, row=100, padx=10, pady=5, sticky=SE)
 
         self.manage_stock_frame.grid_remove()
         #endregion for manage stock screen
+
+        #region for add stock screen
+
+        #frame for add stock screen
+        self.add_stock_frame = Frame(parent)
+        self.add_stock_frame.grid(column=0, row=0, sticky=NSEW)
+        self.add_stock_frame.grid_columnconfigure(0, weight=1)
+        self.add_stock_frame.grid_rowconfigure(0, weight=1)
+
+        #header frame for add stock screen
+        self.add_stock_header_frame = Frame(self.add_stock_frame,bg="lightblue",pady=20)
+        self.add_stock_header_frame.grid(column=0, row=0, sticky=NSEW,columnspan=2)
+        self.add_stock_header_frame.grid_rowconfigure(0, weight=1)
+        self.add_stock_header_frame.grid_columnconfigure(0, weight=1)
+
+        #header label for add stock screen
+        self.add_stock_header_label = Label(
+            self.add_stock_header_frame,
+            text="Add new stock",
+            font=("Arial", 16),
+            bg="lightblue"
+            )
+        self.add_stock_header_label.grid(column=0, row=0, sticky=NSEW)
+
+        #new item labels
+        self.add_name_label = Label(self.add_stock_frame, text="Name:")
+        self.add_name_label.grid(column=0,row=1,sticky=NSEW)
+
+        self.add_stock_label = Label(self.add_stock_frame, text="Stock:")
+        self.add_stock_label.grid(column=0,row=2,sticky=NSEW)
+
+        self.add_price_label = Label(self.add_stock_frame, text="Price:")
+        self.add_price_label.grid(column=0,row=3,sticky=NSEW)
+
+        #modify item entries
+        self.add_name_entry = Entry(self.add_stock_frame)
+        self.add_name_entry.grid(column=1,row=1,sticky=NSEW,padx=10,pady=5)
+
+        self.add_stock_entry = Entry(self.add_stock_frame)
+        self.add_stock_entry.grid(column=1,row=2,sticky=NSEW,padx=10,pady=5)
+
+        self.add_price_entry = Entry(self.add_stock_frame)
+        self.add_price_entry.grid(column=1,row=3,sticky=NSEW,padx=10,pady=5)
+
+        #modify item button
+        save_btn = Button(
+            self.add_stock_frame,
+            text="Save",
+            command=lambda: self.save_item_changes(key,item),
+            padx=20,
+            pady=5
+        )
+        save_btn.grid(column=1,row=4, pady=10, sticky=W)
+
+        self.add_stock_frame.grid_remove()
+        #endregion for add stock screen
 
     def find_stock(self):
         self.find_stock_frame.grid()
@@ -343,7 +408,6 @@ class MainWindow:
                 if item.key == search_input.lower():
                     self.item_details(item.key, item)
             messagebox.showinfo("Not found", "Item not found in inventory.")
-        
     def show_all_stock(self):
         self.show_all_frame.grid()
         self.make_return_button(self.show_all_frame)
@@ -419,6 +483,9 @@ class MainWindow:
     def manage_stock(self):
         self.manage_stock_frame.grid()
         self.make_return_button(self.manage_stock_frame)
+    def add_item(self):
+        self.add_stock_frame.grid()
+        self.make_return_button(self.add_stock_frame)
     def save_item_changes(self,key,item):
 
         new_name = self.modify_name_entry.get()
