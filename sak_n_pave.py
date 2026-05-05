@@ -195,37 +195,34 @@ class MainWindow:
         #shows show_all_frame
         self.show_all_frame.grid()
 
-        self.result(self.show_all_frame)
+        current_row = 0
+        for index, (name, item) in enumerate(inventory.items()):
+            self.result(self.show_all_frame, name, item, index)
 
         self.make_return_button(self.show_all_frame)
         #TODO: make the return button inside the header
 
-    def result(self,source):
+    def result(self,source,name,item, index):
         """loads data in readable state and returns"""
-        current_row = 0
-        
-        for name, item in inventory.items():
             
-            #item SKU
-            result_sku = Label(source, text=f"Stock Code: {name}")
-            result_sku.grid(column=0,row=current_row)
+        #item SKU
+        result_sku = Label(source, text=f"Stock Code: {name}")
+        result_sku.grid(column=0,row=index)
 
-            #item name
-            result_name = Label(source,text=f"{item.name}")
-            result_name.grid(column=1,row=current_row,sticky=NSEW)
+        #item name
+        result_name = Label(source,text=f"{item.name}")
+        result_name.grid(column=1,row=index,sticky=NSEW)
 
-            #item stock 
-            result_stock = Label(source, text=f"stock: {item.stock}")
-            result_stock.grid(column=2,row=current_row)
+        #item stock
+        result_stock = Label(source, text=f"stock: {item.stock}")
+        result_stock.grid(column=2,row=index)
 
-            item_details = Button(
-                source,
-                text="Details",
-                command=lambda name = name, item=item: self.item_details(name,item)
-            )
-            item_details.grid(column=3,row=current_row, padx=10)
-
-            current_row+= 1
+        item_details = Button(
+            source,
+            text="Details",
+            command=lambda name = name, item=item: self.item_details(name,item)
+        )
+        item_details.grid(column=3,row=index, padx=10)
 
     def item_details(self,key,item):
         print(key,item)
@@ -337,25 +334,32 @@ class MainWindow:
         self.item_details(key, item)
 
     def find_stock(self):
+        #remove navi frame and show item seach frame
         self.navi_frame.grid_remove()
         self.header_label.config(text="Find Stock")
         self.item_search_frame.grid()
 
+        #show search bar
         self.search_bar.grid()
         self.search_bar.delete(0, END)
 
+        #show search button
         self.search_button.grid()
 
+        self.make_return_button(self.item_search_frame)
+
     def search_inventory(self):
+        """takes user input and searches inventory.pkl for a match,
+            displays matching items
+        """
+        #user key
         search_input = self.search_bar.get()
         search_result = inventory.get(search_input)
         
         if inventory.get(search_input):
-            lbl = Label(
-                self.item_search_frame,
-                text=(search_result.name)
-                )
-            lbl.grid(column=0,row=0)
+            self.result(self.item_search_frame, search_input,search_result,0)
+
+        #TODO: add user search function for name
 
 if __name__ == "__main__":
     root = Tk()
