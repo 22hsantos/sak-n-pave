@@ -181,9 +181,13 @@ class MainWindow:
     def return_to_header(self,source):#TODO:fix naming convention
         """Forgets the current screen and returns to the main menu."""
         source.grid_remove()
-        self.header_frame.grid()
+        for widget in self.header_frame.winfo_children():
+            widget.grid_remove()
+
         self.navi_frame.grid()
+
         self.header_label.config(text="Welcome to Sak n Pave Inventory system.")
+        self.header_label.grid()
 
     def display_all_stock(self):
         """Display all stock items."""
